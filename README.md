@@ -1,5 +1,6 @@
-| <img src="https://corelight.com/_nuxt/img/assets/images/logo-corelight-ac156d2.png" width=250 alt="corelight"> | | <img src="https://idsips.files.wordpress.com/2015/10/suri-400x400.png?w=300" width=200 alt="Suricata"> | | <img src="https://zeek.org/wp-content/uploads/2019/09/logo.png" width=250 alt="zeek"> |
-|---|---|---|---|---|
+<img src="https://corelight.com/_nuxt/img/assets/images/logo-corelight-ac156d2.png" width=300 alt="corelight">
+<img src="https://idsips.files.wordpress.com/2015/10/suri-400x400.png?w=300" width=200 alt="Suricata">
+<img src="https://zeek.org/wp-content/uploads/2019/09/logo.png" width=250 alt="zeek">
 
 # Corelight Ansible AWX Docker Bundle
 
