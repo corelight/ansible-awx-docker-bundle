@@ -3,7 +3,7 @@
 # Corelight Ansible AWX Docker Bundle
 
 Note: To download and setup with a single command:
-> source <( curl source <( curl https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/quick-start.sh)
+> source <( curl https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/quick-start.sh)
 
 ## Table of contents
 
