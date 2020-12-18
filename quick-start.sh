@@ -196,6 +196,5 @@ cd make-4.3
 ./configure
 ./build.sh
 
-cd /etc/corelight-env/ansible-awx-docker-bundle
-/installer
+cd /etc/corelight-env/ansible-awx-docker-bundle/installer
 ansible-playbook -i inventory install.yml
