@@ -112,7 +112,7 @@ if [ "$DistroBasedOn" = "redhat" ]; then
                 sudo dnf install -y -q python3-pip git
         fi
 elif [ "$DistroBasedOn" = "debian" ]; then
-        if [ command -v unattended-upgrades >/dev/null ]; then
+        if command -v unattended-upgrades >/dev/null; then
             sudo kill $(pidof unattended-upgrades)
             sudo apt remove -y unattended-upgrades
         fi 
