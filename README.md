@@ -3,7 +3,7 @@
 # Corelight Ansible AWX Docker Bundle
 
 Note: To download and setup with a single command:
-> source <( curl https://raw.githubusercontent.com/corelight/Corelight-Ansible-Roles/awx-devel/docker-run-me-first.sh)
+> source <( curl source <( curl https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/quick-start.sh)
 
 ## Table of contents
 
@@ -18,7 +18,7 @@ Note: To download and setup with a single command:
 
 ## About
 
-This repository is dedicated to installing AWX, GitLab, Suricata-update (with Suricata), and supporting applications in a local Docker environment
+The purpose of this repository is to install AWX, GitLab, Suricata-update (with Suricata), and other supporting applications, in a local Docker environment
 
 AWX provides a web-based user interface, REST API, and task engine built on top of [Ansible](https://github.com/ansible/ansible). It is the upstream project for [Tower](https://www.ansible.com/tower), a commercial derivative of AWX.
 
