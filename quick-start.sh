@@ -112,6 +112,10 @@ if [ "$DistroBasedOn" = "redhat" ]; then
                 sudo dnf install -y -q python3-pip git
         fi
 elif [ "$DistroBasedOn" = "debian" ]; then
+        if [command -v unattended-upgrades]; then
+            sudo kill $(pidof unattended-upgrades)
+            sudo apt remove -y unattended-upgrades
+        fi 
         sudo apt-get update -y -q
         sudo apt-get install -y -q --install-suggests python3-pip git
         sudo apt-get install -y -q --install-suggests python3-venv
