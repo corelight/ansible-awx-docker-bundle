@@ -147,7 +147,7 @@ ansible-galaxy collection install community.general -c
 echo "Coping Ansible default config to /etc/ansible/ansible/cfg"
 curl https://raw.githubusercontent.com/corelight/Corelight-Ansible-Roles/awx-devel/roles/ansible_install/files/default-ansible.cfg  -o /etc/ansible/ansible.cfg
 
-git clone https://github.com/corelight/ansible/ansible-awx-docker-bundle.git
+git clone https://github.com/corelight/ansible-awx-docker-bundle.git
 git clone https://github.com/ansible/awx-logos.git
 
 
