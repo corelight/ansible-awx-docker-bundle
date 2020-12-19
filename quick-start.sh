@@ -154,21 +154,21 @@ mkdir /etc/corelight-env/.awx/awxcompose/redis_socket
 sudo chmod 755 -R /etc/corelight-env/
 sudo chmod 777 /etc/corelight-env/.awx/awxcompose/redis_socket
 cd /etc/corelight-env/.awx/awxcompose
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/environment.sh "0600"
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/environment.sh
 sudo chmod 600 environment.sh
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/credentials.py "0600"
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/credentials.py
 sudo chmod 600 credentials.py
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/docker-compose.yml "0600"
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/docker-compose.yml
 sudo chmod 600 docker-compose.yml
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/awx.Dockerfile "0600"
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/awx.Dockerfile
 sudo chmod 600 awx.Dockerfile
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/centos8-suricata.Dockerfile "0600"
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/centos8-suricata.Dockerfile
 sudo chmod 600 centos8-suricata.Dockerfile
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/nginx.conf "0600"
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/nginx.conf
 sudo chmod 600 nginx.conf
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/redis.conf "0664"
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/redis.conf
 sudo chmod 664 redis.conf
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/SECRET_KEY "0600"
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/SECRET_KEY
 sudo chmod 600 SECRET_KEY
 
 BROADCAST_WEBSOCKET_SECRET=$(base64 /dev/urandom | tr -d '/+' | dd bs=128 count=1 2>/dev/null)
