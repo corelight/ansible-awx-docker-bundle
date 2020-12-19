@@ -202,6 +202,8 @@ elif [ "$DistroBasedOn" = "debian" ]; then
         sudo apt-get update
         sudo apt-get install -y docker-ce docker-ce-cli containerd.io
         sudo usermod -aG docker $USER
+        newgrp docker
+        newgrp $USER
 else
         echo "Not RedHat or Debian based"
         exit 1
