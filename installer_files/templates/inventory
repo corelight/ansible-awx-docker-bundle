@@ -47,22 +47,11 @@ pg_port=5432
 # root CA certificate chain.
 # pg_root_ca_file='example_root_ca.crt'
 
-# The following variable is only required when using the provided
-# containerized postgres deployment on OpenShift
-# pg_admin_password=postgrespass
-
-# Use a local distribution build container image for building the AWX package
-# This is helpful if you don't want to bother installing the build-time dependencies as
-# it is taken care of already.
-# use_container_for_build=true
 
 # This will create or update a default admin (superuser) account in AWX, if not provided
 # then these default values are used
 admin_user=admin
 admin_password=password
-
-# Whether or not to create preload data for demonstration purposes
-create_preload_data=False
 
 # AWX Secret key
 # It's *very* important that this stay the same between upgrades or you will lose the ability to decrypt
@@ -74,10 +63,6 @@ secret_key=awxsecret
 # Otherwise it would generate a new one every playbook run.
 # broadcast_websocket_secret=
 
-# Build AWX with official logos
-# Requires cloning awx-logos repo as a sibling of this project.
-# Review the trademark guidelines at https://github.com/ansible/awx-logos/blob/master/TRADEMARKS.md
-awx_official=true
 
 # Proxy
 #http_proxy=http://proxy:3128

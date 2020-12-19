@@ -1,5 +1,0 @@
----
-- name: Build and deploy AWX
-  hosts: all
-  roles:
-    - {role: local_docker}

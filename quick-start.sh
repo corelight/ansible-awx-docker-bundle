@@ -131,12 +131,6 @@ if ! [ -d /etc/corelight-env/ ] > /dev/null; then
         sudo chown "$USER"."$USER" /etc/corelight-env
 fi
 
-if ! [ -d /etc/ansible/ ] > /dev/null; then
-        echo "Creating /etc/ansible directory"
-        sudo mkdir /etc/ansible
-        sudo chown "$USER"."$USER" /etc/ansible
-        sudo chmod 755 /etc/ansible
-fi
 
 echo "Creating python3 virtual environment"
 python3 -m venv /etc/corelight-env
@@ -144,16 +138,39 @@ source /etc/corelight-env/bin/activate
 cd /etc/corelight-env/
 python3 -m pip install --upgrade pip wheel setuptools
 
-echo "Installing Ansible"
-python3 -m pip install --upgrade --upgrade-strategy eager ansible
-ansible-galaxy collection install community.general -c
-
-echo "Coping Ansible default config to /etc/ansible/ansible/cfg"
-curl https://raw.githubusercontent.com/corelight/Corelight-Ansible-Roles/awx-devel/roles/ansible_install/files/default-ansible.cfg  -o /etc/ansible/ansible.cfg
-
-git clone https://github.com/corelight/ansible-awx-docker-bundle.git
 git clone https://github.com/ansible/awx-logos.git
 
+mkdir /etc/corelight-env/srv/gitlab/config
+mkdir /etc/corelight-env/srv/gitlab/logs
+mkdir /etc/corelight-env/srv/gitlab/data
+
+mkdir /etc/corelight-env/awx
+mkdir /etc/corelight-env/awx/projects
+mkdir /etc/corelight-env/.awx
+mkdir /etc/corelight-env/.awx/awxcompose
+mkdir /etc/corelight-env/.awx/awxcompose/redis_socket
+sudo chmod 755 -R /etc/corelight-env/
+sudo chmod 777 /etc/corelight-env/.awx/awxcompose/redis_socket
+cd /etc/corelight-env/.awx/awxcompose
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/environment.sh "0600"
+sudo chmod 600 environment.sh
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/credentials.py "0600"
+sudo chmod 600 credentials.py
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/docker-compose.yml "0600"
+sudo chmod 600 docker-compose.yml
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/awx.Dockerfile "0600"
+sudo chmod 600 awx.Dockerfile
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/centos8-suricata.Dockerfile "0600"
+sudo chmod 600 centos8-suricata.Dockerfile
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/nginx.conf "0600"
+sudo chmod 600 nginx.conf
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/redis.conf "0664"
+sudo chmod 664 redis.conf
+curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/SECRET_KEY "0600"
+sudo chmod 600 SECRET_KEY
+
+BROADCAST_WEBSOCKET_SECRET=$(base64 /dev/urandom | tr -d '/+' | dd bs=128 count=1 2>/dev/null)
+echo BROADCAST_WEBSOCKET_SECRET = \"$BROADCAST_WEBSOCKET_SECRET\" >> credentials.py
 
 if [ "$DistroBasedOn" = "redhat" ]; then
         exit 1
@@ -196,5 +213,8 @@ cd make-4.3
 ./configure
 ./build.sh
 
-cd /etc/corelight-env/ansible-awx-docker-bundle/installer
-ansible-playbook -i inventory install.yml
+cd /etc/corelight-env/.awx/awxcompose
+
+docker-compose up -d
+docker exec awx_web '/usr/bin/update-ca-trust'
+docker exec awx_task '/usr/bin/update-ca-trust'
