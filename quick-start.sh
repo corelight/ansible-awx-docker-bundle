@@ -140,6 +140,8 @@ python3 -m pip install --upgrade pip wheel setuptools
 
 git clone https://github.com/ansible/awx-logos.git
 
+mkdir /etc/corelight-env/srv/
+mkdir /etc/corelight-env/srv/gitlab/
 mkdir /etc/corelight-env/srv/gitlab/config
 mkdir /etc/corelight-env/srv/gitlab/logs
 mkdir /etc/corelight-env/srv/gitlab/data
