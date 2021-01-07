@@ -140,11 +140,8 @@ python3 -m pip install --upgrade pip wheel setuptools
 
 git clone https://github.com/ansible/awx-logos.git
 
-mkdir /etc/corelight-env/srv/
-mkdir /etc/corelight-env/srv/gitlab/
-mkdir /etc/corelight-env/srv/gitlab/config
-mkdir /etc/corelight-env/srv/gitlab/logs
-mkdir /etc/corelight-env/srv/gitlab/data
+mkdir /etc/corelight-env/var/
+mkdir /etc/corelight-env/var/run/
 
 mkdir /etc/corelight-env/awx
 mkdir /etc/corelight-env/awx/projects
@@ -175,17 +172,14 @@ BROADCAST_WEBSOCKET_SECRET=$(base64 /dev/urandom | tr -d '/+' | dd bs=128 count=
 echo BROADCAST_WEBSOCKET_SECRET = \"$BROADCAST_WEBSOCKET_SECRET\" >> credentials.py
 
 if [ "$DistroBasedOn" = "redhat" ]; then
-        exit 1
-       # if [ "$MREV" = "7" ]; then
-              #  echo "Installing Python3-pip and other dependencies"
-              #  sudo yum install -y epel-release libselinux-python dnf
-              #  sudo dnf install -y -q python3-pip git
-              #  sudo dnf install -y -q libselinux-python3
-       # else
-              #  echo "Installing Python3-pip and other dependencies"
-              #  sudo yum install -y dnf
-              #  sudo dnf install -y -q python3-pip git
-       # fi
+        sudo yum install -y yum-utils
+        sudo yum-config-manager \
+          --add-repo \
+          https://download.docker.com/linux/centos/docker-ce.repo
+        sudo yum install -y docker-ce docker-ce-cli containerd.io
+        sudo usermod -aG docker $USER
+        newgrp docker
+        newgrp $USER
 elif [ "$DistroBasedOn" = "debian" ]; then
         sudo apt-get update -y -q
         sudo apt-get install -y -q --install-suggests apt-transport-https \
