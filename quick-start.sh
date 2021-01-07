@@ -181,6 +181,7 @@ if [ "$DistroBasedOn" = "redhat" ]; then
         sudo usermod -aG docker $USER
         newgrp docker
         newgrp $USER
+        echo debug 184
 elif [ "$DistroBasedOn" = "debian" ]; then
         sudo apt-get update -y -q
         sudo apt-get install -y -q --install-suggests apt-transport-https \
@@ -199,8 +200,10 @@ elif [ "$DistroBasedOn" = "debian" ]; then
         sudo usermod -aG docker $USER
         newgrp docker
         newgrp $USER
+        echo debug 203
 else
         echo "Not RedHat or Debian based"
+        echo debug 206
         exit 1
 fi
 
