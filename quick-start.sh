@@ -178,10 +178,6 @@ if [ "$DistroBasedOn" = "redhat" ]; then
           https://download.docker.com/linux/centos/docker-ce.repo
         sudo yum install -y docker-ce docker-ce-cli containerd.io
         sudo systemctl start docker
-        sudo usermod -aG docker $USER
-        newgrp docker
-        newgrp $USER
-        echo debug 184
 elif [ "$DistroBasedOn" = "debian" ]; then
         sudo apt-get update -y -q
         sudo apt-get install -y -q --install-suggests apt-transport-https \
@@ -197,16 +193,13 @@ elif [ "$DistroBasedOn" = "debian" ]; then
           stable"
         sudo apt-get update
         sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-        sudo usermod -aG docker $USER
-        newgrp docker
-        newgrp $USER
-        echo debug 203
 else
         echo "Not RedHat or Debian based"
-        echo debug 206
         exit 1
 fi
 
+sudo usermod -aG docker $USER
+newgrp docker <<EONG
 echo python3 -m pip install --upgrade docker docker-compose
 python3 -m pip install --upgrade docker docker-compose
 
@@ -222,3 +215,5 @@ echo docker-compose up -d
 docker-compose up -d
 docker exec awx_web '/usr/bin/update-ca-trust'
 docker exec awx_task '/usr/bin/update-ca-trust'
+EONG
+newgrp $USER
