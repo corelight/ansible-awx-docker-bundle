@@ -177,6 +177,7 @@ if [ "$DistroBasedOn" = "redhat" ]; then
           --add-repo \
           https://download.docker.com/linux/centos/docker-ce.repo
         sudo yum install -y docker-ce docker-ce-cli containerd.io
+        sudo systemctl start docker
         sudo usermod -aG docker $USER
         newgrp docker
         newgrp $USER
@@ -203,6 +204,7 @@ else
         exit 1
 fi
 
+echo python3 -m pip install --upgrade docker docker-compose
 python3 -m pip install --upgrade docker docker-compose
 
 curl http://ftp.gnu.org/gnu/make/make-4.3.tar.gz -o make-4.3.tar.gz
@@ -213,6 +215,7 @@ cd make-4.3
 
 cd /etc/corelight-env/.awx/awxcompose
 
+echo docker-compose up -d
 docker-compose up -d
 docker exec awx_web '/usr/bin/update-ca-trust'
 docker exec awx_task '/usr/bin/update-ca-trust'
