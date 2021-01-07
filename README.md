@@ -138,10 +138,9 @@ The AWX web server is accessible on the deployment host, using the *host_port* v
 
 You will prompted with a login dialog. The default administrator username is `admin`, and the password is `password`.
 
-The GitLab web server is accessible on the depolyment host using HTTP on port 8330.  The default URL is [http://localhost:8330](http://localhost:8330).
+The GitLab web server is accessible on the deployment host using HTTP on port 8330.  The default URL is [http://localhost:8330](http://localhost:8330).
 
 The default username for GitLab is `root`.  The first time you connect you will be prompted to change the password.
-
 
 ## License
 
