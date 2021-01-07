@@ -8,6 +8,7 @@ services:
         args:
           suricata_version: 5.0
     image: local/centos8.3.2011-suricata
+    restart: unless-stopped
     container_name: suricata
     volumes:
       - suricata_configs:/etc/suricata
@@ -22,6 +23,7 @@ services:
     hostname: 'awx-gitlab'
     container_name: gitlab
     environment:
+      TZ: America/Chicago
       GITLAB_OMNIBUS_CONFIG: |
         external_url 'http://awx-gitlab:8330'
         gitlab_rails['gitlab_shell_ssh_port'] = 2224
@@ -29,10 +31,21 @@ services:
       - '8330:8330'
       - '2224:22'
     volumes:
-      - /etc/corelight-env/srv/gitlab/config:/etc/gitlab
-      - /etc/corelight-env/srv/gitlab/logs:/var/log/gitlab
-      - /etc/corelight-env/srv/gitlab/data:/var/opt/gitlab
+      - gitlab_config:/etc/gitlab
+      - gitlab_logs:/var/log/gitlab
+      - gitlab_data:/var/opt/gitlab
 
+  gitlab-runner:
+    image: 'gitlab/gitlab-runner:ubuntu-v13.6.0'
+    restart: unless-stopped
+    hostname: 'awx-gitlab-runner'
+    container_name: gitlab-runner
+    environment:
+      TZ: America/Chicago
+    volumes:
+      - gitlab-runner_config:/etc/gitlab-runner
+      - /var/run/docker.sock:/var/run/docker.sock
+      
   web:
     build:
         context: .
@@ -114,7 +127,7 @@ services:
     container_name: awx_postgres
     restart: unless-stopped
     volumes:
-      - "/etc/corelight-env/.awx/pgdocker/10/data/:/var/lib/postgresql/data:Z"
+      - postgres-10-data:/var/lib/postgresql/data:Z
     environment:
       POSTGRES_USER: awx
       POSTGRES_PASSWORD: awxpass
@@ -125,9 +138,14 @@ services:
 
 
 volumes:
+  postgres-10-data:
   supervisor-socket:
   rsyslog-socket:
   rsyslog-config:
   suricata_configs:
   suricata_rulesets:
   suricata_logs:
+  gitlab_config:
+  gitlab_logs:
+  gitlab_data:
+  gitlab-runner_config:
