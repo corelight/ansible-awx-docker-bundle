@@ -1,23 +1,5 @@
 #!/bin/bash
 
-if [ -z "$PS1" ]; then
-      echo "Not running interactively"
-else
-      echo -e "\033[0;33m";
-      echo "The script you are about to run will do the following depending on the OS:"
-      echo ""
-      echo "  [ ] Install/Upgrade epel-release, libselinux-python dnf (RHEL7/CentOS7)"
-      echo "  [ ] Install/Upgrade libselinux-python3 (RHEL7/CentOS7)"
-      echo "  [ ] Install/Upgrade Python3 - version 3.8.5+"
-      echo "  [ ] Install/Upgrade Python3-pip - version 20.3+"
-      echo "  [ ] Install Docker - Version 20.10.1+"
-      echo "  [ ] Install docker Python module - version 4.4.0+"
-      echo "  [ ] Install docker-compose Python module - version 1.27.4+"
-      echo "  "
-      read -p "Press any key to continue or CTRL-C to cancel ..."
-      echo -e "\033[0m"
-      echo ""
-fi
 
 lowercase(){
     echo "$1" | sed "y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/"
@@ -58,24 +40,38 @@ fi
 
 
 
-echo "$DIST" "$REV"
+if [ -z "$PS1" ]; then
+      echo "Not running interactively"
+else
+      echo -e "\033[0;33m";
+      echo "$DIST" "$REV"
+      echo ""
+      echo "The script you are about to run will do the following depending on the OS:"
+      echo ""
+      echo "  [ ] Install/Upgrade epel-release, libselinux-python (RHEL7/CentOS7)"
+      echo "  [ ] Install/Upgrade libselinux-python3 (RHEL7/CentOS7)"
+      echo "  [ ] Install/Upgrade Python3 - version 3.8.5+"
+      echo "  [ ] Install/Upgrade Python3-pip - version 20.3+"
+      echo "  [ ] Install Docker - Version 20.10.1+"
+      echo "  [ ] Install docker Python module - version 4.4.0+"
+      echo "  [ ] Install docker-compose Python module - version 1.27.4+"
+      echo "  "
+      read -p "Press any key to continue or CTRL-C to cancel ..."
+      echo -e "\033[0m"
+      echo ""
+fi
 
 if [ "$DistroBasedOn" = "redhat" ]; then
         if [ "$MREV" = "7" ]; then
                 echo "Installing Python3-pip and other dependencies"
-                sudo yum install -y epel-release libselinux-python dnf
-                sudo dnf install -y -q python3-pip git
-                sudo dnf install -y -q libselinux-python3
+                sudo yum install -y epel-release libselinux-python
+                sudo yum install -y python3-pip git
+                sudo yum install -y libselinux-python3
         else
                 echo "Installing Python3-pip and other dependencies"
-                sudo yum install -y dnf
-                sudo dnf install -y -q python3-pip git
+                sudo yum install -y python3-pip git
         fi
 elif [ "$DistroBasedOn" = "debian" ]; then
-        if command -v unattended-upgrades >/dev/null; then
-            sudo kill $(pidof unattended-upgrades)
-            sudo apt remove -y unattended-upgrades
-        fi
         sudo apt-get update -y -q
         sudo apt-get install -y -q python3-pip git
 else
