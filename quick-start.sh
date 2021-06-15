@@ -2,13 +2,52 @@
 # to download and run this script in one command, execute the following:
 # source <( curl https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/quick-start.sh)
 
+lowercase(){
+    echo "$1" | sed "y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/"
+}
+
+OS="$(lowercase "$(uname)")"
+KERNEL="$(uname -r)"
+MACH="$(uname -m)"
+
+OS=$(uname)
+if [ "${OS}" = "Linux" ] ; then
+  if [ -f /etc/redhat-release ] ; then
+    DistroBasedOn='RedHat'
+    DIST=$(sed s/\ release.*//  /etc/redhat-release)
+    PSUEDONAME=$(sed s/.*\(// /etc/redhat-release | sed s/\)//)
+    REV=$(sed s/.*release\ // /etc/redhat-release | sed s/\ .*//)
+    MREV=$(sed s/.*release\ // /etc/redhat-release | sed s/\ .*// | sed s/\\..*//)
+  elif [ -f /etc/debian_version ] ; then
+    DistroBasedOn='Debian'
+    if [ -f /etc/lsb-release ] ; then
+            DIST=$(grep '^DISTRIB_ID' /etc/lsb-release | awk -F=  '{ print $2 }')
+                  PSUEDONAME=$(grep '^DISTRIB_CODENAME' /etc/lsb-release | awk -F=  '{ print $2 }')
+                  REV=$(grep '^DISTRIB_RELEASE' /etc/lsb-release | awk -F=  '{ print $2 }')
+                  MREV=$(grep '^DISTRIB_RELEASE' /etc/lsb-release | awk -F. '{ print $1 }' | awk -F= '{ print $2 }')
+    fi
+  fi
+  OS=$(lowercase $OS)
+  DistroBasedOn=$(lowercase $DistroBasedOn)
+  readonly OS
+  readonly DIST
+  readonly DistroBasedOn
+  readonly PSUEDONAME
+  readonly REV
+  readonly MREV
+  readonly KERNEL
+  readonly MACH
+fi
+
 if [ -z "$PS1" ]; then
       echo "Not running interactively"
 else
       echo -e "\033[0;33m";
+      echo "$DIST" "$REV"
+      echo ""
       echo "The script you are about to run will do the following depending on the OS:"
       echo ""
-      echo "  [ ] Install/Upgrade epel-release, libselinux-python dnf (RHEL7/CentOS7)"
+      echo "  [ ] Install/Upgrade epel-release, libselinux-python (RHEL7/CentOS7)"
       echo "  [ ] Install/Upgrade libselinux-python3 (RHEL7/CentOS7)"
       echo "  [ ] Install/Upgrade Python3 - version 3.8.5+"
       echo "  [ ] Install/Upgrade Python3-pip - version 20.3+"
@@ -34,114 +73,35 @@ else
       echo ""
 fi
 
-sudo mkdir /etc/corelight-env
-cd /etc/corelight-env
-sudo chown $USER.$USER /etc/corelight-env
-cd /etc/corelight-env
-
-lowercase(){
-    echo "$1" | sed "y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/"
-}
-
-OS="$(lowercase "$(uname)")"
-KERNEL="$(uname -r)"
-MACH="$(uname -m)"
-
-if [ "${OS}" == "windowsnt" ]; then
-  OS=windows
-elif [ "${OS}" == "darwin" ]; then
-  OS=mac
-else
-  OS=$(uname)
-  if [ "${OS}" = "SunOS" ] ; then
-    OS=Solaris
-    ARCH=$(uname -p)
-    OSSTR="${OS} ${REV}(${ARCH} $(uname -v))"
-  elif [ "${OS}" = "AIX" ] ; then
-    OSSTR="${OS} $(oslevel) ($(oslevel -r))"
-  elif [ "${OS}" = "Linux" ] ; then
-    if [ -f /etc/redhat-release ] ; then
-      DistroBasedOn='RedHat'
-      DIST=$(sed s/\ release.*//  /etc/redhat-release)
-      PSUEDONAME=$(sed s/.*\(// /etc/redhat-release | sed s/\)//)
-      REV=$(sed s/.*release\ // /etc/redhat-release | sed s/\ .*//)
-      MREV=$(sed s/.*release\ // /etc/redhat-release | sed s/\ .*// | sed s/\\..*//)
-    elif [ -f /etc/SuSE-release ] ; then
-      DistroBasedOn='SuSe'
-      PSUEDONAME=$(tr "\n" ' ' /etc/SuSE-release | sed s/VERSION.*//)
-      REV=$(tr "\n" ' ' /etc/SuSE-release | sed s/.*=\ //)
-      MREV=$(sed s/.*release\ // /etc/redhat-release | sed s/\ .*// | sed s/\\..*//)
-    elif [ -f /etc/mandrake-release ] ; then
-      DistroBasedOn='Mandrake'
-      PSUEDONAME=$(sed s/.*\(// /etc/mandrake-release | sed s/\)//)
-      REV=$( sed s/.*release\ // /etc/mandrake-release |sed s/\ .*//)
-      MREV=$(sed s/.*release\ // /etc/redhat-release | sed s/\ .*// | sed s/\\..*//)
-    elif [ -f /etc/debian_version ] ; then
-      DistroBasedOn='Debian'
-      if [ -f /etc/lsb-release ] ; then
-              DIST=$(grep '^DISTRIB_ID' /etc/lsb-release | awk -F=  '{ print $2 }')
-                    PSUEDONAME=$(grep '^DISTRIB_CODENAME' /etc/lsb-release | awk -F=  '{ print $2 }')
-                    REV=$(grep '^DISTRIB_RELEASE' /etc/lsb-release | awk -F=  '{ print $2 }')
-                    MREV=$(grep '^DISTRIB_RELEASE' /etc/lsb-release | awk -F. '{ print $1 }' | awk -F= '{ print $2 }')
-                fi
-    fi
-    if [ -f /etc/UnitedLinux-release ] ; then
-      DIST="${DIST}[$(tr "\n" ' ' /etc/UnitedLinux-release | sed s/VERSION.*//)]"
-    fi
-    OS=$(lowercase $OS)
-    DistroBasedOn=$(lowercase $DistroBasedOn)
-    readonly OS
-    readonly DIST
-    readonly DistroBasedOn
-    readonly PSUEDONAME
-    readonly REV
-    readonly MREV
-    readonly KERNEL
-    readonly MACH
-  fi
-
-fi
-
-echo "$DIST" "$REV"
-
 if [ "$DistroBasedOn" = "redhat" ]; then
         if [ "$MREV" = "7" ]; then
-                echo "Installing Python3-pip and other dependencies"
-                sudo yum install -y epel-release libselinux-python dnf
-                sudo dnf install -y -q python3-pip git
-                sudo dnf install -y -q libselinux-python3
+                sudo yum install -y epel-release libselinux-python
+                sudo yum install -y python3-pip git
+                sudo yum install -y libselinux-python3
         else
-                echo "Installing Python3-pip and other dependencies"
-                sudo yum install -y dnf
-                sudo dnf install -y -q python3-pip git
+                sudo yum install -y python3-pip git
         fi
 elif [ "$DistroBasedOn" = "debian" ]; then
-        if command -v unattended-upgrades >/dev/null; then
-            sudo kill $(pidof unattended-upgrades)
-            sudo apt remove -y unattended-upgrades
-        fi 
         sudo apt-get update -y -q
-        sudo apt-get install -y -q --install-suggests python3-pip git
-        sudo apt-get install -y -q --install-suggests python3-venv
+        sudo apt-get install -y -q python3-pip git
+        sudo apt-get install -y -q python3-venv
 else
         echo "Not RedHat or Debian based"
         exit 1
 fi
 
-
+echo "Creating python3 virtual environment"
 if ! [ -d /etc/corelight-env/ ] > /dev/null; then
         echo "Creating /etc/corelight-env directory"
         sudo mkdir /etc/corelight-env
         sudo chown "$USER"."$USER" /etc/corelight-env
 fi
-
-
-echo "Creating python3 virtual environment"
 python3 -m venv /etc/corelight-env
 source /etc/corelight-env/bin/activate
-cd /etc/corelight-env/
+
 python3 -m pip install --upgrade pip wheel setuptools
 
+cd /etc/corelight-env/
 git clone https://github.com/ansible/awx-logos.git
 
 mkdir /etc/corelight-env/var/
@@ -175,6 +135,7 @@ sudo chmod 600 SECRET_KEY
 BROADCAST_WEBSOCKET_SECRET=$(base64 /dev/urandom | tr -d '/+' | dd bs=128 count=1 2>/dev/null)
 echo BROADCAST_WEBSOCKET_SECRET = \"$BROADCAST_WEBSOCKET_SECRET\" >> credentials.py
 
+echo "Installing Docker"
 if [ "$DistroBasedOn" = "redhat" ]; then
         sudo yum install -y yum-utils
         sudo yum-config-manager \

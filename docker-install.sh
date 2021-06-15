@@ -63,17 +63,16 @@ fi
 
 if [ "$DistroBasedOn" = "redhat" ]; then
         if [ "$MREV" = "7" ]; then
-                echo "Installing Python3-pip and other dependencies"
                 sudo yum install -y epel-release libselinux-python
                 sudo yum install -y python3-pip git
                 sudo yum install -y libselinux-python3
         else
-                echo "Installing Python3-pip and other dependencies"
                 sudo yum install -y python3-pip git
         fi
 elif [ "$DistroBasedOn" = "debian" ]; then
         sudo apt-get update -y -q
         sudo apt-get install -y -q python3-pip git
+        sudo apt-get install -y -q python3-venv
 else
         echo "Not RedHat or Debian based"
         exit 1
@@ -83,7 +82,7 @@ fi
 
 python3 -m pip install --upgrade pip wheel setuptools
 
-
+echo "Installing Docker"
 if [ "$DistroBasedOn" = "redhat" ]; then
         sudo yum install -y yum-utils
         sudo yum-config-manager \
